@@ -7,6 +7,7 @@ import time
 
 processor = image_processor.ImageProcessor(debug=True)
 
+
 processor.start()
 
 while True:
