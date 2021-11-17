@@ -9,7 +9,7 @@ def nothing(x):
     pass
 
 cv2.namedWindow('image')
-cv2.namedWindow('tava')
+cv2.namedWindow('rgb')
 cv2.namedWindow('mask')
 cv2.moveWindow('mask', 400, 0)
 
@@ -43,8 +43,8 @@ keyDict = {
 
 def change_color(noise, brush_size, mouse_x, mouse_y):
     ob	= rgb[
-        max(0, mouse_y-brush_size):min(cap.height, mouse_y+brush_size+1),
-        max(0, mouse_x-brush_size):min(cap.width, mouse_x+brush_size+1),:].reshape((-1,3)).astype('int32')
+        max(0, mouse_y-brush_size):min(cap.rgb_height, mouse_y+brush_size+1),
+        max(0, mouse_x-brush_size):min(cap.rgb_width, mouse_x+brush_size+1),:].reshape((-1,3)).astype('int32')
     noises		= range(-noise, noise+1)
     for r in noises:
         for g in noises:
@@ -54,15 +54,14 @@ def change_color(noise, brush_size, mouse_x, mouse_y):
 # mouse callback function
 def choose_color(event,x,y,flags,param):
     if event == cv2.EVENT_LBUTTONDOWN:
-        print("click...")
         mouse_x	= x
         mouse_y	= y
         brush_size	= cv2.getTrackbarPos('brush_size','image')
         noise		= cv2.getTrackbarPos('noise','image')
         change_color(noise, brush_size, mouse_x, mouse_y)
 
-cv2.namedWindow('tava')
-cv2.setMouseCallback('tava', choose_color)
+cv2.namedWindow('rgb')
+cv2.setMouseCallback('rgb', choose_color)
 cv2.setMouseCallback('mask', choose_color)
 
 print("Quit: 'q', Save 's', Erase selected color 'e'")
@@ -75,10 +74,10 @@ while(True):
 
     rgb = processedData.color_frame
 
-    cv2.imshow('tava', rgb)
+    cv2.imshow('rgb', rgb)
     
     fragmented	= colors_lookup[rgb[:,:,0] + rgb[:,:,1] * 0x100 + rgb[:,:,2] * 0x10000]
-    frame = np.zeros((cap.height, cap.width, 3), dtype=np.uint8)
+    frame = np.zeros((cap.rgb_height, cap.rgb_width, 3), dtype=np.uint8)
 
     for color in Color:
         frame[fragmented == int(color)] = color.color

@@ -55,14 +55,14 @@ class ImageProcessor():
             self.colors_lookup = pickle.load(conf)
             self.set_segmentation_table(self.colors_lookup)
 
-        self.fragmented	= np.zeros((self.camera.height, self.camera.width), dtype=np.uint8)
+        self.fragmented	= np.zeros((self.camera.rgb_height, self.camera.rgb_width), dtype=np.uint8)
 
-        self.t_balls = np.zeros((self.camera.height, self.camera.width), dtype=np.uint8)
-        self.t_basket_b = np.zeros((self.camera.height, self.camera.width), dtype=np.uint8)
-        self.t_basket_m = np.zeros((self.camera.height, self.camera.width), dtype=np.uint8)
+        self.t_balls = np.zeros((self.camera.rgb_height, self.camera.rgb_width), dtype=np.uint8)
+        self.t_basket_b = np.zeros((self.camera.rgb_height, self.camera.rgb_width), dtype=np.uint8)
+        self.t_basket_m = np.zeros((self.camera.rgb_height, self.camera.rgb_width), dtype=np.uint8)
 
         self.debug = debug
-        self.debug_frame = np.zeros((self.camera.height, self.camera.width), dtype=np.uint8)
+        self.debug_frame = np.zeros((self.camera.rgb_height, self.camera.rgb_width), dtype=np.uint8)
 
     def set_segmentation_table(self, table):
         segment.set_table(table)
@@ -90,13 +90,8 @@ class ImageProcessor():
 
             x, y, w, h = cv2.boundingRect(contour)
 
-            ys	= np.repeat(np.arange(y + h, self.camera.height), 5)
-            xs	= np.repeat(np.linspace(x + w/2, self.camera.width / 2, num=len(ys)/5), 5).astype('uint16')
-            xs[::5] -= 2
-            xs[1::5] -= 1
-            xs[3::5] += 1
-            xs[4::5] += 2
-            
+            ys	= np.repeat(np.arange(y + h, self.camera.rgb_height), 5)
+            xs	= np.repeat(np.linspace(x + w/2, self.camera.rgb_width / 2, num=len(ys)/5), 5).astype('uint16')           
 
             obj_x = int(x + (w/2))
             obj_y = int(y + (h/2))
@@ -143,8 +138,14 @@ class ImageProcessor():
 
         return basket
 
+    def get_frame_data(self, aligned_depth = False):
+        if self.camera.has_depth_capability():
+            return self.camera.get_frames(aligned = aligned_depth)
+        else:
+            return self.camera.get_color_frame(), np.zeros((self.camera.rgb_height, self.camera.rgb_width), dtype=np.uint8)
+
     def process_frame(self, aligned_depth = False) -> ProcessedResults:
-        color_frame, depth_frame = self.camera.get_frames(aligned = aligned_depth)      
+        color_frame, depth_frame = self.get_frame_data(aligned_depth = aligned_depth)
 
         segment.segment(color_frame, self.fragmented, self.t_balls, self.t_basket_m, self.t_basket_b)
 

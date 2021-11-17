@@ -4,7 +4,7 @@ import cv2
 
 import time
 
-cam = camera.RealsenseCamera()
+cam = camera.RealsenseCamera(rgb_height=540, rgb_width=960,rgb_framerate=60)
 processor = image_processor.ImageProcessor(cam, debug=True)
 
 processor.start()

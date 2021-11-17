@@ -8,22 +8,45 @@ class ICamera:
         pass
     def close(self):
         pass
+    def has_depth_capability(self) -> bool:
+        pass
+    def get_color_frame(self):
+        pass
     def get_frames(self):
         pass
 
 
 # Camera implementation using the pyrealsense2 provided API 
 class RealsenseCamera(ICamera):
-    def __init__(self, width = 848, height = 480, exposure = 300, white_balace = 3500):
-        self.width = width
-        self.height = height
+    def __init__(self, 
+                rgb_width = 848, 
+                rgb_height = 480,
+                rgb_framerate = 60,
+                depth_width = 848, 
+                depth_height = 480,
+                depth_framerate = 60,
+                exposure = 50, 
+                white_balace = 3500,
+                depth_enabled = True):
+
+        self.rgb_width = rgb_width
+        self.rgb_height = rgb_height
+        self.rgb_framerate = rgb_framerate
         self.exposure = exposure
         self.white_balace = white_balace
 
+        self.depth_width = depth_width
+        self.depth_height = depth_height
+        self.depth_framerate = depth_framerate
+
         self.pipeline = rs.pipeline()
         self.config = rs.config()
-        self.config.enable_stream(rs.stream.color, self.width, self.height, rs.format.bgr8, 60)
-        self.config.enable_stream(rs.stream.depth, self.width, self.height, rs.format.z16, 60)
+        self.config.enable_stream(rs.stream.color, self.rgb_width, self.rgb_height, rs.format.bgr8, self.rgb_framerate)
+        
+        self.depth_enabled = depth_enabled
+        if self.depth_enabled:
+            self.config.enable_stream(rs.stream.depth, self.depth_width, self.depth_height, rs.format.z16, self.depth_framerate)
+            
         self.align = rs.align(rs.stream.color)
         self.depth_scale = -1
 
@@ -40,6 +63,13 @@ class RealsenseCamera(ICamera):
 
     def close(self):
         self.pipeline.stop()
+    
+    def get_color_frame(self):
+        frames = self.pipeline.wait_for_frames()
+        return np.asanyarray(frames.get_color_frame().get_data())
+    
+    def has_depth_capability(self) -> bool:
+        return self.depth_enabled
 
     def get_frames(self, aligned = False):
         frames = self.pipeline.wait_for_frames()
