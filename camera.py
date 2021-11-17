@@ -38,11 +38,11 @@ class RealsenseCamera(ICamera):
         self.depth_scale = depth_sensor.get_depth_scale()
 
         
-
     def close(self):
         self.pipeline.stop()
 
-    def get_frames(self):
+    def get_frames(self, aligned = False):
         frames = self.pipeline.wait_for_frames()
-        aligned_frames = self.align.process(frames)
-        return np.asanyarray(aligned_frames.get_color_frame().get_data()), np.asanyarray(aligned_frames.get_depth_frame().get_data())
+        if aligned:
+            frames = self.align.process(frames)
+        return np.asanyarray(frames.get_color_frame().get_data()), np.asanyarray(frames.get_depth_frame().get_data())
