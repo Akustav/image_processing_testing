@@ -19,6 +19,8 @@ class Object():
     def __repr__(self) -> str:
         return "[Object: x={}; y={}; size={}; distance={}; exists={}]".format(self.x, self.y, self.size, self.distance, self.exists)
 
+
+# results object of image processing. contains coordinates of objects and frame data used for these results
 class ProcessedResults():
 
     def __init__(self, 
@@ -42,6 +44,7 @@ class ProcessedResults():
         self.debug_frame = debug_frame
 
 
+#Main processor class. processes segmented information
 class ImageProcessor():
     def __init__(self, camera, color_config = "colors/colors.pkl", debug = False):
         self.camera = camera
@@ -59,7 +62,6 @@ class ImageProcessor():
 
         self.debug = debug
         self.debug_frame = np.zeros((self.camera.height, self.camera.width), dtype=np.uint8)
-
 
     def set_segmentation_table(self, table):
         segment.set_table(table)

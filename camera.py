@@ -1,17 +1,18 @@
 import pyrealsense2 as rs
 import numpy as np
 
+
+#Basic camera interface that can be extended to use different API-s. Realsense example below
 class ICamera:
     def open(self):
         pass
     def close(self):
         pass
-
     def get_frames(self):
         pass
 
 
-
+# Camera implementation using the pyrealsense2 provided API 
 class RealsenseCamera(ICamera):
     def __init__(self, width = 848, height = 480, exposure = 300, white_balace = 3500):
         self.width = width
@@ -37,7 +38,6 @@ class RealsenseCamera(ICamera):
         depth_sensor = profile.get_device().first_depth_sensor()
         self.depth_scale = depth_sensor.get_depth_scale()
 
-        
     def close(self):
         self.pipeline.stop()
 
