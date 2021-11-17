@@ -3,6 +3,7 @@ import segment
 import _pickle as pickle
 import numpy as np
 import cv2
+import Color as c
 
 
 class Object():
@@ -151,8 +152,8 @@ class ImageProcessor():
             self.debug_frame = np.copy(color_frame)
 
         balls = self.analyze_balls(self.t_balls)
-        basket_b = self.analyze_baskets(self.t_basket_b, debug_color=(255,0,0))
-        basket_m = self.analyze_baskets(self.t_basket_m, debug_color=(255,0,255))
+        basket_b = self.analyze_baskets(self.t_basket_b, debug_color=c.Color.BLUE.color.tolist())
+        basket_m = self.analyze_baskets(self.t_basket_m, debug_color=c.Color.MAGENTA.color.tolist())
 
         return ProcessedResults(balls = balls, 
                                 basket_b = basket_b, 
