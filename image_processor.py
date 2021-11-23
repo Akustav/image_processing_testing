@@ -73,7 +73,7 @@ class ImageProcessor():
     def stop(self):
         self.camera.close()
 
-    def analyze_balls(self, t_balls) -> list:
+    def analyze_balls(self, t_balls, fragments) -> list:
         contours, hierarchy = cv2.findContours(t_balls, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
         balls = []
@@ -90,8 +90,9 @@ class ImageProcessor():
 
             x, y, w, h = cv2.boundingRect(contour)
 
-            ys	= np.repeat(np.arange(y + h, self.camera.rgb_height), 5)
-            xs	= np.repeat(np.linspace(x + w/2, self.camera.rgb_width / 2, num=len(ys)/5), 5).astype('uint16')           
+            ys	= np.arange(y + h, self.camera.rgb_height)
+            xs	= np.linspace(x + w/2, self.camera.rgb_width / 2, num=len(ys)/5)
+            line_array = fragments[ys, xs]
 
             obj_x = int(x + (w/2))
             obj_y = int(y + (h/2))
@@ -152,7 +153,7 @@ class ImageProcessor():
         if self.debug:
             self.debug_frame = np.copy(color_frame)
 
-        balls = self.analyze_balls(self.t_balls)
+        balls = self.analyze_balls(self.t_balls, self.fragmented)
         basket_b = self.analyze_baskets(self.t_basket_b, debug_color=c.Color.BLUE.color.tolist())
         basket_m = self.analyze_baskets(self.t_basket_m, debug_color=c.Color.MAGENTA.color.tolist())
 
