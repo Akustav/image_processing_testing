@@ -91,7 +91,7 @@ class ImageProcessor():
             x, y, w, h = cv2.boundingRect(contour)
 
             ys	= np.arange(y + h, self.camera.rgb_height)
-            xs	= np.linspace(x + w/2, self.camera.rgb_width / 2, num=len(ys)/5)
+            xs	= np.linspace(x + w/2, self.camera.rgb_width / 2, num=len(ys))
             line_array = fragments[ys, xs]
 
             obj_x = int(x + (w/2))
