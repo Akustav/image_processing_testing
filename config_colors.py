@@ -19,7 +19,8 @@ try:
 except:
     colors_lookup	= np.zeros(0x1000000, dtype=np.uint8)
 
-cap = camera.RealsenseCamera()
+#cap = camera.RealsenseCamera(exposure=300)
+cap = camera.OpenCVCamera(id = 2)
 processor = image_processor.ImageProcessor(cap, debug=True)
 
 cv2.createTrackbar('brush_size','image',3,10, nothing)
