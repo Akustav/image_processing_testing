@@ -8,7 +8,7 @@ class IRobotMotion:
         pass
     def close(self):
         pass
-    def move(x_speed, y_speed, rot_speed):
+    def move(self, x_speed, y_speed, rot_speed):
         pass
 
 class TurtleRobot(IRobotMotion):
