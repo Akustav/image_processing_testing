@@ -10,18 +10,20 @@ def calc_speed(delta, max_delta, max_speed):
     delta_div = delta / max_delta
     sign = math.copysign(1, delta_div)
     normalized_delta = math.pow(abs(delta_div), 2) * sign
-    return normalized_delta * max_speed
+    return int(normalized_delta * max_speed)
 
 def main_loop():
     debug = True
     #cam = camera.RealsenseCamera(exposure = 300)
     motion_sim = motion.TurtleRobot()
+    motion_sim2 = motion.TurtleOmniRobot()
 
     cam = camera.OpenCVCamera(id = 2)
     processor = image_processor.ImageProcessor(cam, debug=debug)
 
     processor.start()
     motion_sim.open()
+    motion_sim2.open()
 
     start = time.time()
     fps = 0
@@ -41,13 +43,13 @@ def main_loop():
 
                 speed_x = calc_speed(delta_x, cam.rgb_width / 2, 200)
                 speed_y = calc_speed(delta_y, cam.rgb_height / 2, 200)
-                rotation = calc_speed(delta_x, cam.rgb_width, 2)
-
-                print(rotation)
+                rotation = calc_speed(delta_x, cam.rgb_width, 5)
 
                 motion_sim.move(speed_x, speed_y, rotation)
+                motion_sim2.move(speed_x, speed_y, rotation)
             else:
                 motion_sim.move(0, 0, 0)
+                motion_sim2.move(0, 0, 0)
 
             frame_cnt +=1
 
@@ -76,5 +78,6 @@ def main_loop():
         cv2.destroyAllWindows()
         processor.stop()
         motion_sim.close()
+        motion_sim2.close()
 
 main_loop()
