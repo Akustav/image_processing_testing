@@ -61,18 +61,15 @@ class TurtleRobot(IRobotMotion):
 class TurtleOmniRobot(TurtleRobot):
     def __init__(self, name="Default turtle omni robot"):
         TurtleRobot.__init__(self, name)
-        self.motor_config = [30, 150, 270]
 
-    def wheel_speed(self, speed, direction, angle):
-        return speed * math.cos(direction - math.radians(angle))
+        # Wheel angles
+        self.motor_config = [30, 150, 270]
 
     def move(self, x_speed, y_speed, rot_speed):
         speeds = [0, 0, 0]
-        move_speed = math.sqrt(x_speed ** 2 + y_speed ** 2)
-        direction = math.atan2(x_speed, y_speed)
-        for i in range(0, 3):
-            speeds[i] = int(self.wheel_speed(move_speed, direction, self.motor_config[i])) + rot_speed
-    
+
+        # This is where you need to calculate the speeds for robot motors
+
         simulated_speeds = self.speeds_to_direction(speeds)
 
         TurtleRobot.move(self, simulated_speeds[0], simulated_speeds[1], simulated_speeds[2])
