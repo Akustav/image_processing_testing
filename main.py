@@ -6,11 +6,15 @@ import time
 
 def main_loop():
     debug = True
-    #cam = camera.RealsenseCamera(exposure = 300)
+    
     motion_sim = motion.TurtleRobot()
     motion_sim2 = motion.TurtleOmniRobot()
-
-    cam = camera.OpenCVCamera(id = 2)
+    
+    #camera instance for normal web cameras
+    #cam = camera.OpenCVCamera(id = 2)
+    # camera instance for realsense cameras
+    cam = camera.RealsenseCamera(exposure = 100)
+    
     processor = image_processor.ImageProcessor(cam, debug=debug)
 
     processor.start()
