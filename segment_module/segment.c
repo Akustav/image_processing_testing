@@ -102,10 +102,14 @@ static PyObject* segment (PyObject *dummy, PyObject *args) {
 
 	fail:
 		Py_XDECREF(yuv);
-		PyArray_XDECREF_ERR(segmented);
-		PyArray_XDECREF_ERR(is_ball);
-		PyArray_XDECREF_ERR(is_gatey);
-		PyArray_XDECREF_ERR(is_gateb);
+		PyArray_DiscardWritebackIfCopy(segmented);
+		Py_XDECREF(segmented);
+		PyArray_DiscardWritebackIfCopy(is_ball);
+		Py_XDECREF(is_ball);
+		PyArray_DiscardWritebackIfCopy(is_gatey);
+		Py_XDECREF(is_gatey);
+		PyArray_DiscardWritebackIfCopy(is_gateb);
+		Py_XDECREF(is_gateb);
 		return NULL;
 }
 
